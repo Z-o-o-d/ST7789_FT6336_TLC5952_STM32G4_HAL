@@ -1,0 +1,4 @@
+../Core/Src/ft6336.c:16:19:FT6336_WriteRegister	24	static
+../Core/Src/ft6336.c:20:19:FT6336_ReadRegister	24	static
+../Core/Src/ft6336.c:24:6:FT6336_Init	16	static
+../Core/Src/ft6336.c:84:6:FT6336_GetTouchPoint	24	static
