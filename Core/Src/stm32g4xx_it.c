@@ -228,7 +228,7 @@ void EXTI15_10_IRQHandler(void)
 
 	  FT6336_GetTouchPoint(&TouchPoints);
 
-	  ST7789_DrawPixel(TouchPoints.point1_y, 240-TouchPoints.point1_x, 0xffffff);
+	  ST7789_DrawPixel(TouchPoints.point1_x, TouchPoints.point1_y, 0xffffff);
 
 
 

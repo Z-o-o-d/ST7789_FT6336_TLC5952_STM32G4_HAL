@@ -121,6 +121,7 @@ int main(void)
 
   ST7789_Init();
   FT6336_Init();
+  TLC5952_Init();
 
 
 
@@ -128,7 +129,6 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
 
-	    TLC5952_Init();
 
   /* USER CODE END 2 */
 
