@@ -13,6 +13,9 @@
 
 extern SPI_HandleTypeDef FT6336_I2C_PORT;
 
+TouchPoints_HandleTypeDef TouchPoints;
+
+
 HAL_StatusTypeDef FT6336_WriteRegister( uint8_t RegAddress, uint8_t *pData, uint16_t Size) {
     return HAL_I2C_Mem_Write(&FT6336_I2C_PORT, FT6X36_ADDR, RegAddress, I2C_MEMADD_SIZE_8BIT, pData, Size, HAL_MAX_DELAY);
 }

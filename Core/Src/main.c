@@ -26,7 +26,7 @@
 
 #include "st7789.h"
 
-
+#include "TLC5952.h"
 
 
 
@@ -59,7 +59,7 @@ TIM_HandleTypeDef htim7;
 /* USER CODE BEGIN PV */
 
 
-TouchPoints_HandleTypeDef TouchPoints;
+//TouchPoints_HandleTypeDef TouchPoints;
 
 /* USER CODE END PV */
 
@@ -78,104 +78,6 @@ static void MX_TIM1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-
-#define TLC5952_SIN_HIGH()   HAL_GPIO_WritePin(TLC5952_SIN_GPIO_Port, TLC5952_SIN_Pin, GPIO_PIN_SET)
-#define TLC5952_SIN_LOW()    HAL_GPIO_WritePin(TLC5952_SIN_GPIO_Port, TLC5952_SIN_Pin, GPIO_PIN_RESET)
-
-#define TLC5952_SCLK_HIGH()  HAL_GPIO_WritePin(TLC5952_SCLK_GPIO_Port, TLC5952_SCLK_Pin, GPIO_PIN_SET)
-#define TLC5952_SCLK_LOW()   HAL_GPIO_WritePin(TLC5952_SCLK_GPIO_Port, TLC5952_SCLK_Pin, GPIO_PIN_RESET)
-
-#define TLC5952_LAT_HIGH()   HAL_GPIO_WritePin(TLC5952_LAT_GPIO_Port, TLC5952_LAT_Pin, GPIO_PIN_SET)
-#define TLC5952_LAT_LOW()    HAL_GPIO_WritePin(TLC5952_LAT_GPIO_Port, TLC5952_LAT_Pin, GPIO_PIN_RESET)
-
-
-
-// LED 状态缓存
-uint8_t ledData[4] = {0x00, 0x00, 0x00, 0x00};
-uint8_t led1=10;
-/**
- * @brief 初始化 TLC5952 GPIO 端口
- */
-void TLC5952_Init(void)
-{
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    GPIO_InitStruct.Pin = TLC5952_SIN_Pin | TLC5952_SCLK_Pin | TLC5952_LAT_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    TLC5952_SIN_LOW();
-    TLC5952_SCLK_LOW();
-    TLC5952_LAT_LOW();
-}
-
-/**
- * @brief 发送单个 bit
- * @param bit 0 或 1
- */
-void TLC5952_WriteBit(uint8_t bit)
-{
-    if (bit)
-        TLC5952_SIN_HIGH();
-    else
-        TLC5952_SIN_LOW();
-
-    TLC5952_SCLK_HIGH();
-    TLC5952_SCLK_LOW();
-}
-
-/**
- * @brief 发送 1 字节数据
- * @param data 发送的字节
- */
-void TLC5952_WriteByte(uint8_t data)
-{
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        TLC5952_WriteBit((data >> (7 - i)) & 0x01);
-    }
-}
-
-/**
- * @brief 发送完整数据（24 bit + 1 bit Latch Select）
- * @param data 4 字节数据
- */
-void TLC5952_WriteData(uint8_t *data, uint16_t length)
-{
-    for (uint16_t i = 0; i < length; i++)
-    {
-        TLC5952_WriteByte(data[i]);
-    }
-
-    TLC5952_LAT_HIGH();
-    TLC5952_LAT_LOW();
-}
-
-
-/**
- * @brief 控制单个 LED 开关
- * @param ledIndex LED 编号 (0~23)
- * @param state 0=关闭, 1=打开
- */
-void TLC5952_SetLED(uint8_t ledIndex, uint8_t state)
-{
-    if (ledIndex < 24)
-    {
-        uint8_t byteIndex = ledIndex / 8;  // 计算字节索引
-        uint8_t bitPos = ledIndex % 8;     // 计算 bit 位置
-
-        if (state)
-            ledData[byteIndex] |= (1 << bitPos);  // 打开 LED
-        else
-            ledData[byteIndex] &= ~(1 << bitPos); // 关闭 LED
-    }
-
-    TLC5952_WriteData(ledData, 4);  // 发送数据
-
-}
 
 /* USER CODE END 0 */
 
@@ -225,9 +127,8 @@ int main(void)
   HAL_TIM_Base_Start(&htim1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-//		ST7789_Fill_Color(WHITE);
-	  TLC5952_Init();         // 初始化 GPIO
 
+	    TLC5952_Init();
 
   /* USER CODE END 2 */
 
@@ -235,23 +136,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  ST7789_Test();
 
-//for (led1 = 0; led1 < 24; ++led1) {
 
-	    TLC5952_WriteData(ledData, 4);  // 发送数据
+
+	    TLC5952_WriteLED();  // 发送数据
+	    TLC5952_WriteControl();
+
 		  HAL_Delay(100);        // 延时 1 秒
 
-//	  TLC5952_SetLED(led1, 1);   // 打开 LED 3
-//	  HAL_Delay(100);        // 延时 1 秒
-//	  TLC5952_SetLED(led1, 0);   // 关闭 LED 3
-//	  HAL_Delay(100);        // 延时 1 秒
-//}
-
-//	  TLC5952_SetLED(10, 1);   // 打开 LED 3
-//	  HAL_Delay(100);        // 延时 1 秒
-//	  TLC5952_SetLED(10, 0);   // 打开 LED 3
-//	  HAL_Delay(100);        // 延时 1 秒
 
 
 

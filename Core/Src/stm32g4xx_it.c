@@ -31,7 +31,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-extern TouchPoints_HandleTypeDef TouchPoints;
+//extern TouchPoints_HandleTypeDef TouchPoints;
 
 /* USER CODE END TD */
 

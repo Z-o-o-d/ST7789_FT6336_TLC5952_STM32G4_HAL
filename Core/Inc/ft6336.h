@@ -18,6 +18,8 @@
 
 #define FT6336_I2C_PORT hi2c1
 
+
+
 // 定义一个结构体，其中包含两个独立的触摸点 (point1 和 point2)
 typedef struct {
   uint16_t point1_x; // 第一个触摸点的 X 坐标
@@ -67,6 +69,8 @@ typedef struct {
   HAL_GPIO_WritePin(FT6336_RST_GPIO_Port, FT6336_RST_Pin, GPIO_PIN_RESET)
 #define FT6336_RST_H                                                           \
   HAL_GPIO_WritePin(FT6336_RST_GPIO_Port, FT6336_RST_Pin, GPIO_PIN_SET)
+
+extern TouchPoints_HandleTypeDef TouchPoints;
 
 void FT6336_Init();
 void FT6336_GetTouchPoint(TouchPoints_HandleTypeDef *touchPoints);
